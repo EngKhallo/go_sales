@@ -46,6 +46,7 @@ func main() {
 	fmt.Println("Connected to MongoDB!")
 
 	r.GET("/users", getAllUsers)
+	r.POST("/users", signUpUser)
 
 	r.Run(":8080")
 }
@@ -69,4 +70,29 @@ func getAllUsers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, users)
+}
+
+func signUpUser(c *gin.Context) {
+	var newUser User
+
+	// Bind the JSON data from the request body to the newUser struct
+	if err := c.ShouldBindJSON(&newUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	newUser.ID = primitive.NewObjectID()
+
+	//Get the Users collection
+	collection := client.Database("go_sales").Collection("users")
+
+	// Insert data
+	_, err := collection.InsertOne(context.TODO(), newUser)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// return actual data
+	c.JSON(http.StatusCreated, newUser)
 }
