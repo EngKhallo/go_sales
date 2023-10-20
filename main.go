@@ -50,4 +50,23 @@ func main() {
 	r.Run(":8080")
 }
 
+func getAllUsers(c *gin.Context) {
+	collection := client.Database("go_sales").Collection("users")
+	cur, err := collection.Find(context.Background(), bson.M{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch users"})
+		return
+	}
 
+	var users []User
+	for cur.Next(context.Background()) {
+		var user User
+		if err := cur.Decode(&user); err != nil {
+			log.Printf("Error decoding book: %v", err)
+			continue
+		}
+		users = append(users, user)
+	}
+
+	c.JSON(http.StatusOK, users)
+}
