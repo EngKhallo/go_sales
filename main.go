@@ -13,7 +13,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
+type User struct {
+	ID           primitive.ObjectID `json:"_id" bson:"_id"`
+	Name         string             `json:"name" bson:"name"`
+	Email        string             `json:"email" bson:"email"`
+	MobileNumber string             `json:"mobile_number" bson:"mobile_number"`
+	ProfileImage string             `json:"profile_image" bson:"profile_image"`
+	Password     string             `json:"password" bson:"password"`
+}
 
 var client *mongo.Client
 
