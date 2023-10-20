@@ -4,16 +4,21 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 
-	// "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+
+
 var client *mongo.Client
 
 func main() {
-	// r := gin.Default()
+	r := gin.Default()
 
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
@@ -33,5 +38,9 @@ func main() {
 
 	fmt.Println("Connected to MongoDB!")
 
+	r.GET("/users", getAllUsers)
 
+	r.Run(":8080")
 }
+
+
