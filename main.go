@@ -27,10 +27,10 @@ type Inventory struct {
 	ID           primitive.ObjectID `json:"_id" bson:"_id"`
 	ProductName  string             `json:"product_name" bson:"product_name"`
 	ExpireDate   time.Time          `json:"expire_date" bson:"expire_date"`
-	CostPrice    float64             `json:"cost_price" bson:"cost_price"`
-	SellingPrice float64             `json:"selling_price" bson:"selling_price"`
+	CostPrice    float64            `json:"cost_price" bson:"cost_price"`
+	SellingPrice float64            `json:"selling_price" bson:"selling_price"`
 	Currency     string             `json:"currency" bson:"currency"`
-	Description  string             `json:"string" bson:"string"`
+	Description  string             `json:"description" bson:"description"`
 	ProductImage string             `json:"product_image" bson:"product_image"`
 }
 
@@ -61,6 +61,7 @@ func main() {
 	r.POST("/users", signUpUser)
 
 	r.GET("/inventory", getAllInventories)
+	r.POST("/inventory", AddNewInventoryItem)
 
 	r.Run(":8080")
 }
@@ -111,16 +112,16 @@ func signUpUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, newUser)
 }
 
-func getAllInventories(c *gin.Context){
+func getAllInventories(c *gin.Context) {
 	collection := client.Database("go_sales").Collection("inventories")
 	cur, err := collection.Find(context.Background(), bson.M{})
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch Inventory items"})
 		return
 	}
 
 	var inventories []Inventory
-	for cur.Next(context.Background()){
+	for cur.Next(context.Background()) {
 		var inventory Inventory
 		if err := cur.Decode(&inventory); err != nil {
 			log.Printf("Error decoding inventory: %v", err)
@@ -128,6 +129,26 @@ func getAllInventories(c *gin.Context){
 		}
 		inventories = append(inventories, inventory)
 	}
-
+	
 	c.JSON(http.StatusOK, inventories)
+}
+
+func AddNewInventoryItem(c *gin.Context) {
+	var newInventory Inventory
+
+	if err := c.ShouldBindJSON(&newInventory); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	newInventory.ID = primitive.NewObjectID()
+
+	collection := client.Database("go_sales").Collection("inventories")
+
+	_, err := collection.InsertOne(context.TODO(), newInventory)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, newInventory)
 }
