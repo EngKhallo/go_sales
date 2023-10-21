@@ -111,4 +111,23 @@ func signUpUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, newUser)
 }
 
+func getAllInventories(c *gin.Context){
+	collection := client.Database("go_sales").Collection("inventories")
+	cur, err := collection.Find(context.Background(), bson.M{})
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch Inventory items"})
+		return
+	}
 
+	var inventories []Inventory
+	for cur.Next(context.Background()){
+		var inventory Inventory
+		if err := cur.Decode(&inventory); err != nil {
+			log.Printf("Error decoding inventory: %v", err)
+			continue
+		}
+		inventories = append(inventories, inventory)
+	}
+
+	c.JSON(http.StatusOK, inventories)
+}
