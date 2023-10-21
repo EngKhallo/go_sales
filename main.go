@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,6 +21,17 @@ type User struct {
 	MobileNumber string             `json:"mobile_number" bson:"mobile_number"`
 	ProfileImage string             `json:"profile_image" bson:"profile_image"`
 	Password     string             `json:"password" bson:"password"`
+}
+
+type Inventory struct {
+	ID           primitive.ObjectID `json:"_id" bson:"_id"`
+	ProductName  string             `json:"product_name" bson:"product_name"`
+	ExpireDate   time.Time          `json:"expire_date" bson:"expire_date"`
+	CostPrice    float64             `json:"cost_price" bson:"cost_price"`
+	SellingPrice float64             `json:"selling_price" bson:"selling_price"`
+	Currency     string             `json:"currency" bson:"currency"`
+	Description  string             `json:"string" bson:"string"`
+	ProductImage string             `json:"product_image" bson:"product_image"`
 }
 
 var client *mongo.Client
@@ -47,6 +59,8 @@ func main() {
 
 	r.GET("/users", getAllUsers)
 	r.POST("/users", signUpUser)
+
+	r.GET("/inventory", getAllInventories)
 
 	r.Run(":8080")
 }
@@ -80,7 +94,7 @@ func signUpUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	newUser.ID = primitive.NewObjectID()
 
 	//Get the Users collection
@@ -96,3 +110,5 @@ func signUpUser(c *gin.Context) {
 	// return actual data
 	c.JSON(http.StatusCreated, newUser)
 }
+
+
