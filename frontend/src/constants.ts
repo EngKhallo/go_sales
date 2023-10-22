@@ -17,6 +17,16 @@ export const PaymentMethods = [
   "Bank Account",
 ] as const;
 
+export const Currency = [
+  "USD",
+  "SLSH",
+  "Zaad-Dollar",
+  "Zaad-Cash",
+  "eDahab-Dollar",
+  "eDahab-Cash",
+  "Premier Wallet",
+] as const;
+
 export const BedConfigrations = [
   "1 Single Bed",
   "1 Double Bed",
