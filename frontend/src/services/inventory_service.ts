@@ -1,11 +1,11 @@
-import { Hotel } from "../interfaces";
+import { Inventory } from "../interfaces";
 import apiClient from "./api-client";
 
 class HotelService {
-  getAllHotels(filterValue?: string) {
+  getAllInventories(filterValue?: string) {
     const controller = new AbortController();
     const params = filterValue ? { name: filterValue } : {};
-    const request = apiClient.get<Hotel[]>("/Hotel/", {
+    const request = apiClient.get<Inventory[]>("/inventory", {
       params,
       signal: controller.signal,
     });
