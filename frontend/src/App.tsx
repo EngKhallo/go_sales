@@ -7,7 +7,6 @@ import { Header } from "./components/Header";
 import { Charts } from "./pages/Charts";
 import Footer from "./components/Footer";
 import Users from "./pages/Users";
-import { Hotels } from "./pages/Hotels";
 import Rooms from "./pages/Rooms";
 import { Bookings } from "./pages/Bookings";
 import Reports from "./pages/Reports";
@@ -17,6 +16,7 @@ import Login from "./pages/Auth/Login";
 import { Sidebar } from "./components/sidebar";
 import { allowedRoutes } from "./route";
 import { MostBookedHotel } from "./pages/Reports/MostBookedHotel";
+import { Inventories } from "./pages/Inventories";
 
 function App() {
   const [navSize, setNavSize] = useState("large");
@@ -71,7 +71,7 @@ function App() {
         <GridItem overflowX="auto" maxW="100%" whiteSpace="nowrap" bg={isDarkMode ? 'gray.800' : 'gray.200'} area={'main'}>
           <Routes>
             {filteredRoutes.includes('/') && <Route path='/' element={<Home />} />}
-            {filteredRoutes.includes('/hotels') && <Route path='/hotels' element={<Hotels />} />}
+            {filteredRoutes.includes('/inventories') && <Route path='/inventories' element={<Inventories />} />}
             {filteredRoutes.includes('/rooms') && <Route path='/rooms' element={<Rooms />} />}
             {filteredRoutes.includes('/charts') && <Route path='/charts' element={<Charts />} />}
             {filteredRoutes.includes('/users') && <Route path='/users' element={<Users />} />}
