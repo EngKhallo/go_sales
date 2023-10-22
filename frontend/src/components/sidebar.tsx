@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FiHome, FiMenu, FiUser, FiBarChart, FiSettings, FiBook, FiGrid } from "react-icons/fi";
 import { NavItem } from "./NavItem";
 import { Link } from "react-router-dom";
-import { FaHotel } from "react-icons/fa";
+import { FaList} from "react-icons/fa";
 
 interface Props {
     navSize: any;
@@ -51,8 +51,8 @@ export const Sidebar = ({ setNavSize, navSize }: Props) => {
                 <Link to="/" style={{ width: '100%' }}>
                     <NavItem navSize={navSize} title={'Dashboard'} icon={FiHome} active={false} />
                 </Link>
-                <Link to={"/hotels"} style={{ width: '100%' }}>
-                    <NavItem navSize={navSize} title={'Hotels'} icon={FaHotel} active={false} />
+                <Link to={"/inventories"} style={{ width: '100%' }}>
+                    <NavItem navSize={navSize} title={'Inventories'} icon={FaList} active={false} />
                 </Link>
                 <Link to={"/rooms"} style={{ width: '100%' }}>
                     <NavItem navSize={navSize} title={'Rooms'} icon={FiGrid} active={false} />
