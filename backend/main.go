@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,20 +37,20 @@ type Inventory struct {
 }
 
 type Sale struct {
-	ID           primitive.ObjectID `json:"_id" bson:"_id"`
-	ProductID    primitive.ObjectID `json:"product_id" bson:"product_id"`
-	SaleDate     time.Time          `json:"sale_date" bson:"sale_date"`
-	Quantity     int                `json:"quantity" bson:"quantity"`
-	TotalAmount  float64            `json:"total_amount" bson:"total_amount"`
-	Currency     string             `json:"currency" bson:"currency"`
-	Customer     string             `json:"customer" bson:"customer"`
+	ID          primitive.ObjectID `json:"_id" bson:"_id"`
+	ProductID   primitive.ObjectID `json:"product_id" bson:"product_id"`
+	SaleDate    time.Time          `json:"sale_date" bson:"sale_date"`
+	Quantity    int                `json:"quantity" bson:"quantity"`
+	TotalAmount float64            `json:"total_amount" bson:"total_amount"`
+	Currency    string             `json:"currency" bson:"currency"`
+	Customer    string             `json:"customer" bson:"customer"`
 }
 
 type SaleWithProduct struct {
 	Sale
-	ProductName string  `json:"product_name" bson:"product_name"`
-	CostPrice   float64 `json:"cost_price" bson:"cost_price"`
-	TotalRevenue float64            `json:"total_revenue" bson:"total_revenue"`
+	ProductName  string  `json:"product_name" bson:"product_name"`
+	CostPrice    float64 `json:"cost_price" bson:"cost_price"`
+	TotalRevenue float64 `json:"total_revenue" bson:"total_revenue"`
 }
 
 var client *mongo.Client
@@ -75,6 +76,12 @@ func main() {
 
 	fmt.Println("Connected to MongoDB!")
 
+	 // Configure CORS
+	 config := cors.DefaultConfig()
+	 config.AllowOrigins = []string{"http://localhost:5173"} // Replace with your React app's URL
+	 config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	 r.Use(cors.New(config))
+
 	r.GET("/users", getAllUsers)
 	r.POST("/users", signUpUser)
 
@@ -84,6 +91,8 @@ func main() {
 	r.POST("/inventory", AddNewInventoryItem)
 	r.GET("/sales", getAllSales)
 	r.POST("/sales", AddNewSale)
+
+	
 
 	// Protected routes (require authentication)
 	// protected := r.Group("/protected")
