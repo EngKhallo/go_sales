@@ -19,15 +19,15 @@ export interface User {
   password: string;
 }
 
-export interface Hotel {
-  id: number;
-  name: string;
-  address: string;
-  location: string;
-  email: string;
-  commissionRate: number;
-  phoneNumber: string;
+export interface Inventory {
+  _id?: number;
+  product_name: string;
+  expire_date: string;
+  cost_price: string;
+  selling_price: string;
+  currency: number;
   description: string;
+  product_image?: string;
 }
 
 export interface Room {
@@ -71,11 +71,11 @@ export interface AddBookingDto {
   paymentMethod: string;
 }
 
-export interface HotelData {
-  data: Hotel[];
-  success: boolean;
-  message: string;
-}
+// export interface HotelData {
+//   data: Hotel[];
+//   success: boolean;
+//   message: string;
+// }
 export interface RoomData {
   data: Room[];
   success: boolean;
