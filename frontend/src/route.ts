@@ -5,7 +5,7 @@ type AllowedRoutes = {
 export const allowedRoutes: AllowedRoutes = {
     Admin: [
       '/',
-      '/hotels',
+      '/inventories',
       '/rooms',
       '/charts',
       '/users',
