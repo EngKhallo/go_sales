@@ -42,7 +42,7 @@ const Users = () => {
 
     const addUser = async (newUser: User) => {
         try {
-            const reponse = await apiClient.post<User>('/Users', newUser);
+            const reponse = await apiClient.post<User>('/users', newUser);
             const addedUser = reponse.data;
             setUser([...user, addedUser]);
             console.log('actual user: ', [...user, addedUser])
