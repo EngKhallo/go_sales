@@ -19,6 +19,8 @@ import { useForm } from "react-hook-form";
 const schema = z.object({
     name: z.string().min(3).max(30),
     email: z.string(),
+    mobile_number: z.string(),
+    // profile_image: z.string(),
     password: z.string().min(3).max(15),
 })
 
@@ -75,6 +77,34 @@ const form = ({ isOpen, onClose, onSubmit }: Props) => {
                                     {errors.email?.message}
                                 </Box>
                             )}
+                            <Box>
+                                <FormLabel htmlFor="mobile_number">mobile_number</FormLabel>
+                                <Input
+                                    {...register("mobile_number")}
+                                    type="text"
+                                    id="mobile_number"
+                                    placeholder="Please enter user mobile_number"
+                                />
+                            </Box>
+                            {errors.name && (
+                                <Box color="red" fontSize="sm">
+                                    {errors.email?.message}
+                                </Box>
+                            )}
+                            {/* <Box>
+                                <FormLabel htmlFor="profile_image">profile_image</FormLabel>
+                                <Input
+                                    {...register("profile_image")}
+                                    type="file"
+                                    id="profile_image"
+                                    placeholder="Please enter user profile_image"
+                                />
+                            </Box>
+                            {errors.name && (
+                                <Box color="red" fontSize="sm">
+                                    {errors.email?.message}
+                                </Box>
+                            )} */}
                             <Box>
                                 <FormLabel htmlFor="password">Password</FormLabel>
                                 <Input
