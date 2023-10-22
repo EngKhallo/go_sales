@@ -14,7 +14,9 @@ export interface User {
   id?: number;
   name: string;
   email: string;
-  role?: string;
+  mobile_number: string;
+  profile_image?: string;
+  password: string;
 }
 
 export interface Hotel {
