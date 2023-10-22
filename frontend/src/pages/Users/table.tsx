@@ -1,4 +1,4 @@
-import { Table, Thead, Tr, Th, Tbody, Td, Badge, Flex, Text, Icon, Checkbox } from "@chakra-ui/react"
+import { Table, Thead, Tr, Th, Tbody, Td, Flex, Text, Icon, Checkbox } from "@chakra-ui/react"
 import { FiEdit2, FiTrash } from "react-icons/fi"
 import { User } from "../../interfaces";
 
@@ -15,7 +15,9 @@ export const DataTable = ({ user }: Props) => {
                 <Tr>
                     <Th><Checkbox></Checkbox></Th>
                     <Th>User Name</Th>
-                    <Th>Role</Th>
+                    <Th>Email</Th>
+                    <Th>Mobile Number</Th>
+                    <Th>Password</Th>
                     <Th>Actions</Th>
                 </Tr>
             </Thead>
@@ -31,15 +33,23 @@ export const DataTable = ({ user }: Props) => {
                             </Flex>
                         </Td>
                         <Td>
-                            <Badge borderRadius={5} variant='solid' colorScheme={item.role === 'Admin' ? 'green' : item.role === 'Employee' ? 'yellow' : item.role === 'Project Manager' ? 'purple' : 'teal'}>
-                                {item.role}
-
-                            </Badge>
+                            <Flex align="center">
+                                <Flex flexDir={"column"}>
+                                    <Text fontWeight={"medium"} ml={2}>{item.email}</Text>
+                                </Flex>
+                            </Flex>
                         </Td>
                         <Td>
                             <Flex align="center">
                                 <Flex flexDir={"column"}>
-                                    <Text fontWeight={"medium"} ml={2}>{item.email}</Text>
+                                    <Text fontWeight={"medium"} ml={2}>{item.mobile_number}</Text>
+                                </Flex>
+                            </Flex>
+                        </Td>
+                        <Td>
+                            <Flex align="center">
+                                <Flex flexDir={"column"}>
+                                    <Text fontWeight={"medium"} ml={2}>{item.password}</Text>
                                 </Flex>
                             </Flex>
                         </Td>
