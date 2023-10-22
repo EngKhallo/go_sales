@@ -4,7 +4,7 @@ import apiClient from "./api-client";
 class UserService {
   getAllUsers() {
     const controller = new AbortController();
-    const request = apiClient.get<User[]>("Users", {
+    const request = apiClient.get<User[]>("users", {
       signal: controller.signal,
     });
 
