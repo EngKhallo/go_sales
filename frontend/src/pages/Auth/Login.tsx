@@ -13,7 +13,7 @@ import {
 import apiClient from "../../services/api-client";
   
   const schema = z.object({
-    name: z.string().min(3),
+    email: z.string().min(3),
     password: z.string().min(3),
   });
   
@@ -31,18 +31,18 @@ import apiClient from "../../services/api-client";
   
     const onSubmit = async (data: loginFormData) => {
       try {
-        const response = await apiClient.post("/Auth/Login", {
-          UserName: data.name,
+        const response = await apiClient.post("/login", {
+          email: data.email,
           Password: data.password,
         });
   
         const { token } = response.data; // Assuming the token is returned in the response
-        const role = response.data.data.roles; // Assuming the role is returned in the response
+        // const role = response.data.data.roles; // Assuming the role is returned in the response
   
         // Store the token and role in local storage
         const localToken = localStorage.setItem("token", token);
-        const localRoles = localStorage.setItem("role", role);
-        console.log('local datas', localToken, localRoles);
+        // const localRoles = localStorage.setItem("role", role);
+        console.log('local datas', localToken);
   
         // Redirect to the appropriate page
         window.location.href = "/";
@@ -69,13 +69,13 @@ import apiClient from "../../services/api-client";
           <FormControl>
             <FormLabel>Name</FormLabel>
             <Input
-              {...register("name")}
-              type="name"
-              placeholder="Enter your username"
+              {...register("email")}
+              type="email"
+              placeholder="Enter your useremail"
             />
-            {errors.name && (
+            {errors.email && (
               <Box color="red" fontSize="sm">
-                {errors.name.message}
+                {errors.email.message}
               </Box>
             )}
           </FormControl>
