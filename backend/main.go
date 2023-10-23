@@ -3,10 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
-	"net/http"
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,6 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
+	"net/http"
+	"time"
 )
 
 type User struct {
@@ -76,14 +75,14 @@ func main() {
 
 	fmt.Println("Connected to MongoDB!")
 
-	 // Configure CORS
-	 config := cors.DefaultConfig()
-	 config.AllowOrigins = []string{"http://localhost:5173"} // Replace with your React app's URL
-	 config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
-	 r.Use(cors.New(config))
+	// Configure CORS
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:5173/"} // Replace with your React app's URL
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	r.Use(cors.New(config))
 
 	r.GET("/users", getAllUsers)
-	r.POST("/users", signUpUser)
+	r.POST("/signup", signUpUser)
 
 	r.POST("/login", loginUser)
 
@@ -92,17 +91,12 @@ func main() {
 	r.GET("/sales", getAllSales)
 	r.POST("/sales", AddNewSale)
 
-	
-
-	// Protected routes (require authentication)
-	// protected := r.Group("/protected")
-	// protected.Use(authMiddleware())
-	// {
-	// 	protected.GET("/inventory", getAllInventories)
-	// 	protected.POST("/inventory", AddNewInventoryItem)
-	// 	protected.GET("/sales", getAllSales)
-	// 	protected.POST("/sales", AddNewSale)
-	// }
+	protected := r.Group("/protected")
+	protected.Use(authMiddleware())
+	{
+		protected.GET("/sales", getAllSales)
+	}
+	// r.GET("/verify/:id", verifyOTP) // New route for email verification
 
 	r.Run(":8080")
 }
@@ -169,7 +163,17 @@ func signUpUser(c *gin.Context) {
 
 	newUser.ID = primitive.NewObjectID()
 
-	//Get the Users collection
+	// // Generate a random OTP for email verification
+	// newUser.OTP = generateOTP()
+	// newUser.OTPExpiration = time.Now().Add(15 * time.Minute) // OTP expiration time
+
+	// Send the OTP to the user's email
+	// if err := sendOTPByEmail(newUser.Email, newUser.OTP); err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send OTP email"})
+	// 	return
+	// }
+
+	// Get the Users collection
 	collection := client.Database("go_sales").Collection("users")
 
 	// Insert data
@@ -179,8 +183,14 @@ func signUpUser(c *gin.Context) {
 		return
 	}
 
-	// return actual data
-	c.JSON(http.StatusCreated, newUser)
+	token, err := generateToken(newUser) // Implement this function
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
+		return
+	}
+
+	// Return actual data
+	c.JSON(http.StatusCreated, gin.H{"User": newUser, "token": token})
 }
 
 func loginUser(c *gin.Context) {
