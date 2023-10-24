@@ -30,11 +30,10 @@ type Inventory struct {
 	ID           primitive.ObjectID `json:"_id" bson:"_id"`
 	ProductName  string             `json:"product_name" bson:"product_name"`
 	ExpireDate   time.Time          `json:"expire_date" bson:"expire_date"`
-	CostPrice    float64            `json:"cost_price" bson:"cost_price"`
-	SellingPrice float64            `json:"selling_price" bson:"selling_price"`
+	CostPrice    int            `json:"cost_price" bson:"cost_price"`
+	SellingPrice int            `json:"selling_price" bson:"selling_price"`
 	Currency     string             `json:"currency" bson:"currency"`
 	Description  string             `json:"description" bson:"description"`
-	// ProductImage string             `json:"product_image" bson:"product_image"`
 }
 
 type Sale struct {
@@ -42,7 +41,7 @@ type Sale struct {
 	ProductID   primitive.ObjectID `json:"product_id" bson:"product_id"`
 	SaleDate    time.Time          `json:"sale_date" bson:"sale_date"`
 	Quantity    int                `json:"quantity" bson:"quantity"`
-	TotalAmount float64            `json:"total_amount" bson:"total_amount"`
+	TotalAmount int            `json:"total_amount" bson:"total_amount"`
 	Currency    string             `json:"currency" bson:"currency"`
 	Customer    string             `json:"customer" bson:"customer"`
 }
@@ -50,8 +49,8 @@ type Sale struct {
 type SaleWithProduct struct {
 	Sale
 	ProductName  string  `json:"product_name" bson:"product_name"`
-	CostPrice    float64 `json:"cost_price" bson:"cost_price"`
-	TotalRevenue float64 `json:"total_revenue" bson:"total_revenue"`
+	CostPrice    int `json:"cost_price" bson:"cost_price"`
+	TotalRevenue int `json:"total_revenue" bson:"total_revenue"`
 }
 
 var client *mongo.Client
