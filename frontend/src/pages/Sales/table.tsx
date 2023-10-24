@@ -23,9 +23,8 @@ export const DataTable = ({ productSales }: Props) => {
                         <Th>Product Name</Th>
                         <Th>Sales Date</Th>
                         <Th>Quantity</Th>
+                        <Th>Selling Price</Th>
                         <Th>Total Amount</Th>
-                        <Th>Cost Price</Th>
-                        <Th>Total Revenue</Th>
                         <Th>Currency</Th>
                         <Th>Customer</Th>
                         <Th>Actions</Th>
@@ -59,17 +58,12 @@ export const DataTable = ({ productSales }: Props) => {
                                 </Td>
                                 <Td>
                                     <Text fontWeight="light" ml={2}>
-                                        {item.total_amount}
+                                        {item.selling_price}
                                     </Text>
                                 </Td>
                                 <Td>
                                     <Text fontWeight="light" ml={2}>
-                                        {item.cost_price}
-                                    </Text>
-                                </Td>
-                                <Td>
-                                    <Text textAlign="center" fontWeight="light" ml={2}>
-                                        {item.total_revenue}
+                                        {item.total_amount}
                                     </Text>
                                 </Td>
                                 <Td>
