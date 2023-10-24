@@ -25,9 +25,22 @@ export interface Inventory {
   expire_date: string;
   cost_price: string;
   selling_price: string;
-  currency: number;
+  currency: string;
   description: string;
   product_image?: string;
+}
+
+export interface ProductSale {
+  _id?: number;
+  product_id: string;
+  product_name: string;
+  sale_date: string;
+  quantity: number;
+  total_amount: number;
+  currency: string;
+  customer: string;
+  cost_price: number;
+  total_revenue: number;
 }
 
 export interface Room {
