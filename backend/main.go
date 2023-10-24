@@ -3,6 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"log"
+	"net/http"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -10,9 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"net/http"
-	"time"
 )
 
 type User struct {
@@ -20,7 +22,7 @@ type User struct {
 	Name         string             `json:"name" bson:"name"`
 	Email        string             `json:"email" bson:"email"`
 	MobileNumber string             `json:"mobile_number" bson:"mobile_number"`
-	ProfileImage string             `json:"profile_image" bson:"profile_image"`
+	// ProfileImage string             `json:"profile_image" bson:"profile_image"```
 	Password     string             `json:"password" bson:"password"`
 }
 
@@ -32,7 +34,7 @@ type Inventory struct {
 	SellingPrice float64            `json:"selling_price" bson:"selling_price"`
 	Currency     string             `json:"currency" bson:"currency"`
 	Description  string             `json:"description" bson:"description"`
-	ProductImage string             `json:"product_image" bson:"product_image"`
+	// ProductImage string             `json:"product_image" bson:"product_image"`
 }
 
 type Sale struct {
@@ -57,7 +59,7 @@ var client *mongo.Client
 func main() {
 	r := gin.Default()
 
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI("mongodb+srv://khalid:developer@cluster0.10oxptx.mongodb.net/")
 
 	var err error
 	client, err = mongo.Connect(context.TODO(), clientOptions)
@@ -77,7 +79,7 @@ func main() {
 
 	// Configure CORS
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:5173/"} // Replace with your React app's URL
+	config.AllowOrigins = []string{"*"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	r.Use(cors.New(config))
 
@@ -91,44 +93,13 @@ func main() {
 	r.GET("/sales", getAllSales)
 	r.POST("/sales", AddNewSale)
 
-	protected := r.Group("/protected")
-	protected.Use(authMiddleware())
-	{
-		protected.GET("/sales", getAllSales)
-	}
+	// protected := r.Group("/protected")
+	// protected.Use(authMiddleware())
+	// {
+	// }
 	// r.GET("/verify/:id", verifyOTP) // New route for email verification
 
 	r.Run(":8080")
-}
-
-func authMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
-
-		if tokenString == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized. Please log in."})
-			c.Abort()
-			return
-		}
-
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("unexpected signing method")
-			}
-
-			// Replace with your actual secret key
-			return []byte("myToken"), nil
-		})
-
-		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized. Please log in."})
-			c.Abort()
-			return
-		}
-
-		// If the token is valid, proceed to the next handler
-		c.Next()
-	}
 }
 
 func getAllUsers(c *gin.Context) {
@@ -183,14 +154,14 @@ func signUpUser(c *gin.Context) {
 		return
 	}
 
-	token, err := generateToken(newUser) // Implement this function
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
-		return
-	}
+	// token, err := generateToken(newUser) // Implement this function
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
+	// 	return
+	// }
 
 	// Return actual data
-	c.JSON(http.StatusCreated, gin.H{"User": newUser, "token": token})
+	c.JSON(http.StatusCreated, gin.H{"User": newUser})
 }
 
 func loginUser(c *gin.Context) {
@@ -234,7 +205,7 @@ func generateToken(user User) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() // Token expiration time
 
 	// Sign the token with a secret key
-	tokenString, err := token.SignedString([]byte("your-secret-key")) // Replace with your actual secret key
+	tokenString, err := token.SignedString([]byte("myToken")) // Replace with your actual secret key
 
 	if err != nil {
 		return "", err
