@@ -1,6 +1,7 @@
-import { Table, Thead, Tr, Th, Tbody, Td, Flex, Text, Icon, Checkbox, TableContainer,Button } from "@chakra-ui/react";
+import { Table, Thead, Tr, Th, Tbody, Td, Flex, Text, Icon, Checkbox, TableContainer, Button } from "@chakra-ui/react";
 import { FiEdit2, FiTrash } from "react-icons/fi";
 import { Inventory } from "../../interfaces";
+import moment from "moment";
 
 interface Props {
     inventory: Inventory[];
@@ -44,7 +45,8 @@ export const DataTable = ({ inventory, onDelete }: Props) => {
                                 </Td>
                                 <Td>
                                     <Text fontWeight="light" ml={2}>
-                                        {item.expire_date}
+                                        {moment(item.expire_date).format('YYYY-MM-DD / hh:mm')}
+
                                     </Text>
                                 </Td>
                                 <Td>
