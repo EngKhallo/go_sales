@@ -37,8 +37,15 @@ export interface ProductSale {
   total_amount: number;
   currency: string;
   customer: string;
-  cost_price: number;
-  total_revenue: number;
+  selling_price: number;
+}
+
+export interface Sales {
+  product_id: string;
+  sales_date: string;
+  quantity: number;
+  currency: string;
+  customer: string;
 }
 
 export interface Room {
