@@ -31,7 +31,7 @@ import apiClient from "../../services/api-client";
   
     const onSubmit = async (data: loginFormData) => {
       try {
-        const response = await apiClient.post("/login", {
+        const response = await apiClient.post("login", {
           email: data.email,
           Password: data.password,
         });
