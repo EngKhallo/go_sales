@@ -17,15 +17,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Currency } from "../../constants";
-import moment from "moment";
-import { useState } from "react";
 
 const schema = z.object({
     _id: z.string().optional(),
     product_name: z.string(),
     expire_date: z.string(),
-    cost_price: z.string(),
-    selling_price: z.string(),
+    cost_price: z.number(),
+    selling_price: z.number(),
     currency: z.enum(Currency),
     description: z.string(),
 });
@@ -46,11 +44,10 @@ const form = ({ isOpen, onClose, onSubmit }: Props) => {
         <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
             <DrawerOverlay />
             <form id="my-form" onSubmit={handleSubmit(data => {
-                // Format the date in the "2024-01-02T15:04:05Z" format
                 const formattedDate = new Date(data.expire_date).toISOString();
 
-                // Set the formatted date in the form data
                 data.expire_date = formattedDate;
+
                 console.log('data', data)
                 onSubmit(data);
                 reset();
@@ -82,7 +79,7 @@ const form = ({ isOpen, onClose, onSubmit }: Props) => {
                                 <FormLabel htmlFor="cost_price">cost_price</FormLabel>
                                 <Input
                                     {...register("cost_price")}
-                                    type="string"
+                                    type="number"
                                     id="cost_price"
                                     placeholder="Please enter cost_price"
                                 />
@@ -91,7 +88,7 @@ const form = ({ isOpen, onClose, onSubmit }: Props) => {
                                 <FormLabel htmlFor="selling_price">selling_price</FormLabel>
                                 <Input
                                     {...register("selling_price")}
-                                    type="string"
+                                    type="number"
                                     id="selling_price"
                                     placeholder="Please enter selling_price"
                                 />
