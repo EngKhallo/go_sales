@@ -19,11 +19,11 @@ export interface User {
 }
 
 export interface Inventory {
-  _id?: number;
+  _id?: string;
   product_name: string;
-  expire_date: string;
-  cost_price: string;
-  selling_price: string;
+  expire_date: string; 
+  cost_price: number;
+  selling_price: number;
   currency: string;
   description: string;
 }
