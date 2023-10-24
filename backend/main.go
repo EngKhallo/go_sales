@@ -41,7 +41,6 @@ type Sale struct {
 	ProductID   primitive.ObjectID `json:"product_id" bson:"product_id"`
 	SaleDate    time.Time          `json:"sale_date" bson:"sale_date"`
 	Quantity    int                `json:"quantity" bson:"quantity"`
-	TotalAmount int            `json:"total_amount" bson:"total_amount"`
 	Currency    string             `json:"currency" bson:"currency"`
 	Customer    string             `json:"customer" bson:"customer"`
 }
@@ -49,8 +48,8 @@ type Sale struct {
 type SaleWithProduct struct {
 	Sale
 	ProductName  string  `json:"product_name" bson:"product_name"`
-	CostPrice    int `json:"cost_price" bson:"cost_price"`
-	TotalRevenue int `json:"total_revenue" bson:"total_revenue"`
+	SellingPrice    int `json:"selling_price" bson:"selling_price"`
+	TotalRevenue int `json:"total_amount" bson:"total_amount"`
 }
 
 var client *mongo.Client
@@ -278,13 +277,14 @@ func getAllSales(c *gin.Context) {
 		}
 
 		// Calculate the total revenue
-		totalRevenue := sale.TotalAmount - product.CostPrice
+		totalRevenue := sale.Quantity * product.SellingPrice
+
 
 		// Create a new struct to include product name and revenue
 		saleWithProduct := SaleWithProduct{
 			Sale:         sale,
 			ProductName:  product.ProductName,
-			CostPrice:    product.CostPrice,
+			SellingPrice:    product.SellingPrice,
 			TotalRevenue: totalRevenue,
 		}
 
