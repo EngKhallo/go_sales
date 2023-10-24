@@ -25,7 +25,6 @@ export const DataTable = ({ inventory, onDelete }: Props) => {
                         <Th>Selling Price</Th>
                         <Th>Currency</Th>
                         <Th>Description</Th>
-                        <Th>Product Image</Th>
                         <Th>Actions</Th>
                     </Tr>
                 </Thead>
@@ -67,11 +66,6 @@ export const DataTable = ({ inventory, onDelete }: Props) => {
                                 <Td>
                                     <Text textAlign="center" fontWeight="light" ml={2}>
                                         {item.description}
-                                    </Text>
-                                </Td>
-                                <Td>
-                                    <Text fontWeight="light" ml={2}>
-                                        {item.product_image}
                                     </Text>
                                 </Td>
                                 <Td>
