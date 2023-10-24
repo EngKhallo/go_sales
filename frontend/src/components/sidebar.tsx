@@ -1,6 +1,6 @@
 import { Avatar, Divider, Flex, Heading, IconButton, Text } from "@chakra-ui/react"
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { FiHome, FiMenu, FiUser, FiBarChart, FiSettings, FiBook, FiGrid } from "react-icons/fi";
+import { FiHome, FiMenu, FiUser, FiBarChart, FiSettings, FiBook, FiGrid, FiShoppingBag } from "react-icons/fi";
 import { NavItem } from "./NavItem";
 import { Link } from "react-router-dom";
 import { FaList} from "react-icons/fa";
@@ -54,8 +54,8 @@ export const Sidebar = ({ setNavSize, navSize }: Props) => {
                 <Link to={"/inventories"} style={{ width: '100%' }}>
                     <NavItem navSize={navSize} title={'Inventories'} icon={FaList} active={false} />
                 </Link>
-                <Link to={"/rooms"} style={{ width: '100%' }}>
-                    <NavItem navSize={navSize} title={'Rooms'} icon={FiGrid} active={false} />
+                <Link to={"/sales"} style={{ width: '100%' }}>
+                    <NavItem navSize={navSize} title={'Sales'} icon={FiShoppingBag} active={false} />
                 </Link>
                 <Link to={"/bookings"} style={{ width: '100%' }}>
                     <NavItem navSize={navSize} title={'Bookings'} icon={FiBook} active={false} />
