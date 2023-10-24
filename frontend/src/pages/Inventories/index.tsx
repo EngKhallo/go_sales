@@ -6,10 +6,10 @@ import { FiPlus, FiRefreshCw, FiSettings } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { DataTable } from "./table";
 import { Inventory } from "../../interfaces";
-// import Form from "./form";
 import apiClient from "../../services/api-client";
-import hotelService from "../../services/inventory_service";
 import { CanceledError } from "axios";
+import inventory_service from "../../services/inventory_service";
+import Form from "./form";
 
 
 export const Inventories = () => {
@@ -27,7 +27,7 @@ export const Inventories = () => {
 
     const fetchData = () => {
         setLoading(true)
-        const { request, cancel } = hotelService.getAllInventories();
+        const { request, cancel } = inventory_service.getAllInventories();
         request.then(res => {
             const data = res.data;
             setInventory(data)
@@ -49,7 +49,7 @@ export const Inventories = () => {
 
     const addInventory = async (newInventory: Inventory) => {
         try {
-            const response = await apiClient.post<Inventory>(`/Inventory/`, newInventory);
+            const response = await apiClient.post<Inventory>(`/inventory`, newInventory);
             const addedInventory = response.data;
             setInventory([...inventory, addedInventory]);
             console.log('added inventory product', inventory)
@@ -68,10 +68,6 @@ export const Inventories = () => {
     const deleteInventory = async (inventories: Inventory) => {
         try {
             setInventory(inventory.filter(h => h._id !== inventories._id));
-
-            const response = await apiClient.delete<Inventory>(`/Inventory/${inventories._id}`)
-            const data = response.data;
-            console.log('data', data)
             toast({
                 title: `${title} deleted`,
                 description: `We've deleted your ${title} for you.`,
@@ -80,16 +76,16 @@ export const Inventories = () => {
                 isClosable: true,
             })
         } catch (error) {
-            const originalHotel = [...inventory];
+            const originalInventory = [...inventory];
             console.error('error deleting data: ', error);
-            setInventory(originalHotel)
+            setInventory(originalInventory)
         }
     }
 
 
     return (
         <Box p={10}>
-            <Text color={isDarkMode ? 'gray.100' : 'gray.600'} fontSize={"2xl"} mb={2}>Dashboard - Hotels</Text>
+            <Text color={isDarkMode ? 'gray.100' : 'gray.600'} fontSize={"2xl"} mb={2}>Dashboard - {title}</Text>
             <Box bg={isDarkMode ? 'gray.800' : 'white'} p={5}>
                 <Flex justifyContent={"space-between"}>
                     <Box>
@@ -111,11 +107,11 @@ export const Inventories = () => {
                             </Button>
 
                             {/* Users Form */}
-                            {/* <Form isOpen={isOpen} onClose={onClose}
+                            <Form isOpen={isOpen} onClose={onClose}
                                 onSubmit={(formData) => {
-                                    const newInventory: Inventory = { ...formData, _id: inventory.length + 1 };
+                                    const newInventory: Inventory = { ...formData };
                                     addInventory(newInventory);
-                                }} /> */}
+                                }} />
 
                             <Button variant="unstyled" bgColor="none" onClick={() => fetchData()}>
                                 <Icon mx={5} as={FiRefreshCw} fontSize={"20px"} />
