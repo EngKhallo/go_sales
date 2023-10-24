@@ -57,16 +57,10 @@ export const Sidebar = ({ setNavSize, navSize }: Props) => {
                 <Link to={"/sales"} style={{ width: '100%' }}>
                     <NavItem navSize={navSize} title={'Sales'} icon={FiShoppingBag} active={false} />
                 </Link>
-                <Link to={"/bookings"} style={{ width: '100%' }}>
-                    <NavItem navSize={navSize} title={'Bookings'} icon={FiBook} active={false} />
-                </Link>
-                <Link to={"/charts"} style={{ width: '100%' }}>
-                    <NavItem navSize={navSize} title={'Graphs'} icon={FiBarChart} active={false} />
-                </Link>
                 <Link to={"/reports"} style={{ width: '100%' }}>
                     <NavItem navSize={navSize} title={'Reports'} icon={FiBook} active={false} />
                 </Link>
-                <NavItem navSize={navSize} title={'Settings'} icon={FiSettings} active={false} />
+
                 <Link to={"/users"} style={{ width: '100%' }}>
                     <NavItem navSize={navSize} title={'Users'} icon={FiUser} active={false} />
                 </Link>
