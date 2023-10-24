@@ -14,35 +14,21 @@ import { HotelsReport } from "./pages/Reports/Hotels";
 import { BookingReport } from "./pages/Reports/Bokings";
 import Login from "./pages/Auth/Login";
 import { Sidebar } from "./components/sidebar";
-import { allowedRoutes } from "./route";
 import { MostBookedHotel } from "./pages/Reports/MostBookedHotel";
 import { Inventories } from "./pages/Inventories";
+import { Sales } from "./pages/Sales";
 
 function App() {
   const [navSize, setNavSize] = useState("large");
   const { colorMode } = useColorMode();
   const isDarkMode = colorMode === 'dark';
 
-  const [userRole, setUserRole] = useState<string>("");
-
-  useEffect(() => {
-    // Read the user role from local storage
-    const role = localStorage.getItem("role");
-    const defaultRole = role || ""; // Use an empty string as the default value if role is null
-
-    setUserRole(defaultRole);
-  }, []);
-
-  const filteredRoutes = allowedRoutes[userRole] || [];
-
-
   const location = useLocation()
 
   console.log('ssss', location.pathname)
+  
 
-  localStorage
   return (
-
     <Grid
       templateAreas={{
         lg: `"nav header" "nav main" "nav footer"`,
@@ -63,7 +49,6 @@ function App() {
         <GridItem
           display={location.pathname == '/login' ? 'none' : 'grid'}
           position="fixed" // Make the sidebar fixed
-          //  top="60px" // Adjust the top value to match your header height
           left="0"
           width={navSize == "small" ? "75px" : "200px"}
           height="100vh" // Subtract the header height from the viewport height
@@ -79,7 +64,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/inventories' element={<Inventories />} />
-          <Route path='/rooms' element={<Rooms />} />
+          <Route path='/sales' element={<Sales />} />
           <Route path='/charts' element={<Charts />} />
           <Route path='/users' element={<Users />} />
           <Route path='/bookings' element={<Bookings />} />
