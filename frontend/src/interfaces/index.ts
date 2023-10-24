@@ -15,7 +15,6 @@ export interface User {
   name: string;
   email: string;
   mobile_number: string;
-  profile_image?: string;
   password: string;
 }
 
@@ -27,7 +26,6 @@ export interface Inventory {
   selling_price: string;
   currency: string;
   description: string;
-  product_image?: string;
 }
 
 export interface ProductSale {
