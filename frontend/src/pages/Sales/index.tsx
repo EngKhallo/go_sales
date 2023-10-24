@@ -5,8 +5,8 @@ import {
 import { FiPlus, FiRefreshCw, FiSettings } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { DataTable } from "./table";
-import { Inventory, ProductSale } from "../../interfaces";
-// import Form from "./form";
+import { Inventory, ProductSale, Sales } from "../../interfaces";
+import Form from "./form";
 import apiClient from "../../services/api-client";
 import { CanceledError } from "axios";
 import sales_service from "../../services/sales_service";
@@ -22,6 +22,7 @@ export const Sales = () => {
 
 
     const [sale, setSale] = useState<ProductSale[]>([]);
+    const [newSales, setNewSales] = useState<Sales[]>([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -48,12 +49,12 @@ export const Sales = () => {
         fetchData()
     }, []);
 
-   /*  const addInventory = async (newInventory: Inventory) => {
+    const addNewSale = async (newSale: Sales) => {
         try {
-            const response = await apiClient.post<Inventory>(`/inventory/`, newInventory);
-            const addedInventory = response.data;
-            setInventory([...inventory, addedInventory]);
-            console.log('added inventory product', inventory)
+            const response = await apiClient.post<Sales>(`/sales/`, newSale);
+            const addedSale = response.data;
+            setNewSales([...newSales, addedSale]);
+            console.log('New Sale: ', sale)
             toast({
                 title: `${title} created`,
                 description: `We've created your ${title} for you.`,
@@ -62,30 +63,9 @@ export const Sales = () => {
                 isClosable: true,
             })
         } catch (err) {
-            console.error('error adding inventory', err);
+            console.error('error adding new sale', err);
         }
     };
-
-    const deleteInventory = async (inventories: Inventory) => {
-        try {
-            setInventory(inventory.filter(h => h._id !== inventories._id));
-
-            const response = await apiClient.delete<Inventory>(`/invenory/${inventories._id}`)
-            const data = response.data;
-            console.log('data', data)
-            toast({
-                title: `${title} deleted`,
-                description: `We've deleted your ${title} for you.`,
-                status: 'error',
-                duration: 9000,
-                isClosable: true,
-            })
-        } catch (error) {
-            const originalHotel = [...inventory];
-            console.error('error deleting data: ', error);
-            setInventory(originalHotel)
-        }
-    } */
 
     return (
         <Box p={10}>
@@ -111,11 +91,11 @@ export const Sales = () => {
                             </Button>
 
                             {/* Users Form */}
-                            {/* <Form isOpen={isOpen} onClose={onClose}
+                            <Form isOpen={isOpen} onClose={onClose}
                                 onSubmit={(formData) => {
-                                    const newInventory: Inventory = { ...formData, _id: inventory.length + 1 };
-                                    addInventory(newInventory);
-                                }} /> */}
+                                    const newSale: Sales = { ...formData };
+                                    addNewSale(newSale);
+                                }} hotel={[]} room={[]} />
 
                             <Button variant="unstyled" bgColor="none" onClick={() => fetchData()}>
                                 <Icon mx={5} as={FiRefreshCw} fontSize={"20px"} />
@@ -126,7 +106,7 @@ export const Sales = () => {
                 </Flex>
 
                 {/* User Table */}
-                <DataTable loading={loading} error={error} productSales={sale}  />
+                <DataTable loading={loading} error={error} productSales={sale} />
             </Box>
         </Box>
     )
