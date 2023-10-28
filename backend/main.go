@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,7 +24,6 @@ type User struct {
 	Name         string             `json:"name" bson:"name"`
 	Email        string             `json:"email" bson:"email"`
 	MobileNumber string             `json:"mobile_number" bson:"mobile_number"`
-	// ProfileImage string             `json:"profile_image" bson:"profile_image"```
 	Password     string             `json:"password" bson:"password"`
 }
 
@@ -30,32 +31,34 @@ type Inventory struct {
 	ID           primitive.ObjectID `json:"_id" bson:"_id"`
 	ProductName  string             `json:"product_name" bson:"product_name"`
 	ExpireDate   time.Time          `json:"expire_date" bson:"expire_date"`
-	CostPrice    int            `json:"cost_price" bson:"cost_price"`
-	SellingPrice int            `json:"selling_price" bson:"selling_price"`
+	CostPrice    int                `json:"cost_price" bson:"cost_price"`
+	SellingPrice int                `json:"selling_price" bson:"selling_price"`
 	Currency     string             `json:"currency" bson:"currency"`
 	Description  string             `json:"description" bson:"description"`
 }
 
 type Sale struct {
-	ID          primitive.ObjectID `json:"_id" bson:"_id"`
-	ProductID   primitive.ObjectID `json:"product_id" bson:"product_id"`
-	SaleDate    time.Time          `json:"sale_date" bson:"sale_date"`
-	Quantity    int                `json:"quantity" bson:"quantity"`
-	Currency    string             `json:"currency" bson:"currency"`
-	Customer    string             `json:"customer" bson:"customer"`
+	ID        primitive.ObjectID `json:"_id" bson:"_id"`
+	ProductID primitive.ObjectID `json:"product_id" bson:"product_id"`
+	SaleDate  time.Time          `json:"sale_date" bson:"sale_date"`
+	Quantity  int                `json:"quantity" bson:"quantity"`
+	Currency  string             `json:"currency" bson:"currency"`
+	Customer  string             `json:"customer" bson:"customer"`
 }
 
 type SaleWithProduct struct {
 	Sale
-	ProductName  string  `json:"product_name" bson:"product_name"`
-	SellingPrice    int `json:"selling_price" bson:"selling_price"`
-	TotalRevenue int `json:"total_amount" bson:"total_amount"`
+	ProductName  string `json:"product_name" bson:"product_name"`
+	SellingPrice int    `json:"selling_price" bson:"selling_price"`
+	TotalRevenue int    `json:"total_amount" bson:"total_amount"`
 }
 
 var client *mongo.Client
 
 func main() {
 	r := gin.Default()
+
+	gin.SetMode(gin.ReleaseMode)
 
 	clientOptions := options.Client().ApplyURI("mongodb+srv://khalid:developer@cluster0.10oxptx.mongodb.net/")
 
@@ -81,24 +84,66 @@ func main() {
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	r.Use(cors.New(config))
 
-	r.GET("/users", getAllUsers)
+	// protected routes
+	r.GET("/users", authMiddleware(), getAllUsers)
+	r.GET("/inventory", authMiddleware(), getAllInventories)
+	r.POST("/inventory", authMiddleware(), AddNewInventoryItem)
+	r.GET("/sales", authMiddleware(), getAllSales)
+	r.POST("/sales", authMiddleware(), AddNewSale)
+	// public routes
 	r.POST("/signup", signUpUser)
-
 	r.POST("/login", loginUser)
 
-	r.GET("/inventory", getAllInventories)
-	r.POST("/inventory", AddNewInventoryItem)
-	r.GET("/sales", getAllSales)
-	r.POST("/sales", AddNewSale)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Use a default port like 8080 if PORT is not set
+	}
 
-	// protected := r.Group("/protected")
-	// protected.Use(authMiddleware())
-	// {
-	// }
-	// r.GET("/verify/:id", verifyOTP) // New route for email verification
+	// Start your application on the specified port
+	err = r.Run(":" + port)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	r.Run(":8080")
 }
+
+// can you give me auth middleware function
+func authMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Get the token from the header
+		tokenString := c.GetHeader("Authorization")
+		if tokenString == "" {
+			// Token is missing
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			c.Abort()
+			return
+		}
+		// Validate the token
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			// Make sure that the token method conform to "SigningMethodHMAC"
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			// Return the secret key used to sign the token
+			return []byte("myToken"), nil
+		})
+		if err != nil {
+			// Malformed token
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			c.Abort()
+
+			return
+		}
+		// Is token valid?
+		if token.Valid {
+			c.Next() // Proceed to the next middleware
+		} else {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.Abort()
+		}
+	}
+}
+
 
 func getAllUsers(c *gin.Context) {
 	collection := client.Database("go_sales").Collection("users")
@@ -122,6 +167,8 @@ func getAllUsers(c *gin.Context) {
 }
 
 func signUpUser(c *gin.Context) {
+	// call the sendOTP function in here to where it belongs
+	// user is the user object that you get from the request body
 	var newUser User
 
 	// Bind the JSON data from the request body to the newUser struct
@@ -131,16 +178,6 @@ func signUpUser(c *gin.Context) {
 	}
 
 	newUser.ID = primitive.NewObjectID()
-
-	// // Generate a random OTP for email verification
-	// newUser.OTP = generateOTP()
-	// newUser.OTPExpiration = time.Now().Add(15 * time.Minute) // OTP expiration time
-
-	// Send the OTP to the user's email
-	// if err := sendOTPByEmail(newUser.Email, newUser.OTP); err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send OTP email"})
-	// 	return
-	// }
 
 	// Get the Users collection
 	collection := client.Database("go_sales").Collection("users")
@@ -152,15 +189,11 @@ func signUpUser(c *gin.Context) {
 		return
 	}
 
-	// token, err := generateToken(newUser) // Implement this function
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
-	// 	return
-	// }
-
 	// Return actual data
 	c.JSON(http.StatusCreated, gin.H{"User": newUser})
 }
+
+
 
 func loginUser(c *gin.Context) {
 	var inputUser User
@@ -279,12 +312,11 @@ func getAllSales(c *gin.Context) {
 		// Calculate the total revenue
 		totalRevenue := sale.Quantity * product.SellingPrice
 
-
 		// Create a new struct to include product name and revenue
 		saleWithProduct := SaleWithProduct{
 			Sale:         sale,
 			ProductName:  product.ProductName,
-			SellingPrice:    product.SellingPrice,
+			SellingPrice: product.SellingPrice,
 			TotalRevenue: totalRevenue,
 		}
 
