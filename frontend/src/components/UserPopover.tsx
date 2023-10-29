@@ -13,6 +13,11 @@ import {
 import { FiLogOut, FiSettings, FiUser } from "react-icons/fi"
 import { Link } from "react-router-dom"
 
+// create a function to remove the token from local storage
+// const logout = () => {
+//     localStorage.removeItem("token");
+// };
+
 export const UserPopover = () => {
     return (
         <Popover>
@@ -36,8 +41,7 @@ export const UserPopover = () => {
                         <Divider />
                         <Flex align="center">
                             <Icon mr="10px" as={FiLogOut} />
-                            <Link to='/login'><Text fontWeight="normal" fontSize={"sm"}>Logout</Text></Link>
-                            
+                            <Link to='/login' ><Text fontWeight="normal" fontSize={"sm"}>Logout</Text></Link>
                         </Flex>
                     </Flex>
                 </PopoverBody>

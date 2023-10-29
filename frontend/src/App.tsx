@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Grid, GridItem, Show, useColorMode } from "@chakra-ui/react";
+import { Grid, GridItem, Show, useColorMode } from "@chakra-ui/react"; 
+// q: what is the previous line's error?
+
 import { Route, Routes, useLocation } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/home";
@@ -17,11 +19,16 @@ function App() {
   const { colorMode } = useColorMode();
   const isDarkMode = colorMode === 'dark';
 
-  const location = useLocation()
+  const token = localStorage.getItem("token");
 
-  console.log('ssss', location.pathname)
-  
-
+  const location = useLocation();
+  if (!token && location.pathname !== '/login') {
+    window.location.href = "/login";
+  }else{
+    if (location.pathname === '/login') {
+      localStorage.removeItem("token");
+    }
+  }
   return (
     <Grid
       templateAreas={{
