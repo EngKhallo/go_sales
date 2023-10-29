@@ -109,7 +109,7 @@ export const Inventories = () => {
                             {/* Users Form */}
                             <Form isOpen={isOpen} onClose={onClose}
                                 onSubmit={(formData) => {
-                                    const newInventory: Inventory = { ...formData };
+                                    const newInventory: Inventory = { ...formData } as any;
                                     addInventory(newInventory);
                                 }} />
 
