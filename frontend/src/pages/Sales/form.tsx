@@ -11,21 +11,22 @@ import {
   DrawerOverlay,
   FormLabel,
   Input,
-  Stack,
   Select,
+  Stack,
   Text,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { PaymentMethods } from '../../constants';
+import { Currency } from '../../constants';
+import { Inventory } from '../../interfaces';
 
 const schema = z.object({
-  hotelName: z.string().nonempty('Please select a hotel'),
-  roomName: z.string().nonempty('Please select a room'),
-  checkInDate: z.string().nonempty('Please select a check-in date'),
-  checkOutDate: z.string().nonempty('Please select a check-out date'),
-  paymentMethod: z.enum(PaymentMethods),
+  product_id: z.string().nonempty("Product ID is required"),
+  sales_date: z.string().nonempty("Sales date is required"),
+  quantity: z.string(),
+  currency: z.string().nonempty("Currency is required"),
+  customer: z.string().nonempty("Customer name is required"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -34,11 +35,10 @@ interface Props {
   onSubmit: (data: FormData) => void;
   isOpen: boolean;
   onClose: () => void;
-  hotel: { id: number; name: string }[];
-  room: { id: number; type: string }[];
+  products: Inventory[] | undefined;
 }
 
-const Form: React.FC<Props> = ({ isOpen, onClose, onSubmit, hotel, room }) => {
+const Form: React.FC<Props> = ({ isOpen, onClose, onSubmit, products }) => {
   const {
     register,
     handleSubmit,
@@ -59,45 +59,43 @@ const Form: React.FC<Props> = ({ isOpen, onClose, onSubmit, hotel, room }) => {
           <DrawerBody>
             <Stack spacing="24px">
               <Box>
-                <FormLabel htmlFor="hotelName">Select Hotel: </FormLabel>
-                <Select {...register('hotelName')} id="hotelName" defaultValue="None">
-                  {hotel.map(({ id, name }) => (
-                    <option key={id} value={name}>
-                      {name}
+                <FormLabel htmlFor="product_id">Select Product: </FormLabel>
+                <Select {...register('product_id')} id="product_id" defaultValue="None">
+                  {products?.map(({ _id, product_name }) => (
+                    <option key={_id} value={_id}>
+                      {product_name}
                     </option>
                   ))}
                 </Select>
+                {/* <Input {...register('product_id')} type="string" id="product_id" /> */}
               </Box>
               <Box>
-                <FormLabel htmlFor="roomName">Select Hotel Room: </FormLabel>
-                <Select {...register('roomName')} id="roomName" defaultValue="None">
-                  {room.map(({ id, type }) => (
-                    <option key={id} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </Select>
+                <FormLabel htmlFor="Sales Date">Select Sales Date: </FormLabel>
+                <Input {...register('sales_date')} type="datetime-local" id="sales_date" />
+                {errors.sales_date && <Text color="red">{errors.sales_date.message}</Text>}
               </Box>
               <Box>
-                <FormLabel htmlFor="checkInDate">Select Check-In Date: </FormLabel>
-                <Input {...register('checkInDate')} type="datetime-local" id="checkInDate" />
-                {errors.checkInDate && <Text color="red">{errors.checkInDate.message}</Text>}
+                <FormLabel htmlFor="quantity">Quantity of the product: </FormLabel>
+                <Input {...register('quantity')} type="number" id="quantity" />
+                {errors.quantity && <Text color="red">{errors.quantity.message}</Text>}
               </Box>
               <Box>
-                <FormLabel htmlFor="checkOutDate">Select Check-Out Date: </FormLabel>
-                <Input {...register('checkOutDate')} type="datetime-local" id="checkOutDate" />
-                {errors.checkOutDate && <Text color="red">{errors.checkOutDate.message}</Text>}
-              </Box>
-              <Box>
-                <FormLabel htmlFor="paymentMethod">Select Payment Method: </FormLabel>
-                <Select {...register('paymentMethod')} id="paymentMethod" defaultValue="None">
-                  {PaymentMethods.map((method) => (
+                <FormLabel htmlFor="currency">Select Currency: </FormLabel>
+                <Select {...register('currency')} id="currency" defaultValue="None">
+                  {Currency.map((method) => (
                     <option key={method} value={method}>
                       {method}
                     </option>
                   ))}
                 </Select>
               </Box>
+
+              <Box>
+                <FormLabel htmlFor="customer">Customer Name: </FormLabel>
+                <Input {...register('customer')} type="text" id="customer" />
+                {errors.customer && <Text color="red">{errors.customer.message}</Text>}
+              </Box>
+
             </Stack>
           </DrawerBody>
           <DrawerFooter borderTopWidth="1px">
