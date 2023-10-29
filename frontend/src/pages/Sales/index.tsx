@@ -5,7 +5,7 @@ import {
 import { FiPlus, FiRefreshCw, FiSettings } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { DataTable } from "./table";
-import { Inventory, ProductSale, Sales } from "../../interfaces";
+import { ProductSale, ISales, Inventory } from "../../interfaces";
 import Form from "./form";
 import apiClient from "../../services/api-client";
 import { CanceledError } from "axios";
@@ -17,12 +17,13 @@ export const Sales = () => {
     const { colorMode } = useColorMode();
     const isDarkMode = colorMode === 'dark';
 
-    const { onOpen, isOpen } = useDisclosure()
+    const { onOpen, isOpen, onClose } = useDisclosure()
     const toast = useToast();
 
 
     const [sale, setSale] = useState<ProductSale[]>([]);
-    const [newSales, setNewSales] = useState<Sales[]>([]);
+    const [newSales, setNewSales] = useState<ISales[]>([]);
+    const [inventory, setInventory] = useState<Inventory[]>([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -38,20 +39,35 @@ export const Sales = () => {
         }).catch(err => {
             if (err instanceof CanceledError) return;
             setError(err.message);
-            console.log(err.message);
+            console.log("error is", err.message);
             setLoading(false)
         });
 
         return () => cancel();
     }
 
+    const fetchProducts = async () => {
+        try {
+          const response = await apiClient.get('/inventory');
+          const data = response.data;
+          setInventory(data);
+          return data;
+        } catch (err) {
+          console.error('Error fetching products', err);
+          throw err;
+        }
+      };
+      
+
     useEffect(() => {
-        fetchData()
+        fetchData(),
+        console.log("all inventories: ", inventory)
+        fetchProducts()
     }, []);
 
-    const addNewSale = async (newSale: Sales) => {
+    const addNewSale = async (newSale: ISales) => {
         try {
-            const response = await apiClient.post<Sales>(`/sales/`, newSale);
+            const response = await apiClient.post<ISales>(`/sales`, newSale);
             const addedSale = response.data;
             setNewSales([...newSales, addedSale]);
             console.log('New Sale: ', sale)
@@ -91,11 +107,11 @@ export const Sales = () => {
                             </Button>
 
                             {/* Users Form */}
-                            <Form isOpen={isOpen} onClose={onClose}
+                            <Form products={inventory} isOpen={isOpen} onClose={onClose}
                                 onSubmit={(formData) => {
-                                    const newSale: Sales = { ...formData };
+                                    const newSale: ISales = { ...formData, quantity: parseInt(formData.quantity)};
                                     addNewSale(newSale);
-                                }} hotel={[]} room={[]} />
+                                }} />
 
                             <Button variant="unstyled" bgColor="none" onClick={() => fetchData()}>
                                 <Icon mx={5} as={FiRefreshCw} fontSize={"20px"} />
