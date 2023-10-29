@@ -9,7 +9,7 @@ const NotFound = () => {
                 </Center>
             </Box>
             <Heading color="blue" as="h1" size="2xl">
-                Only Admin is Allowed
+                Authorized Personnel Only ! 404 
             </Heading>
         </Box>
     )
