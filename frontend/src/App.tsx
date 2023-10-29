@@ -7,12 +7,8 @@ import { Header } from "./components/Header";
 import { Charts } from "./pages/Charts";
 import Footer from "./components/Footer";
 import Users from "./pages/Users";
-import Reports from "./pages/Reports";
-import { HotelsReport } from "./pages/Reports/Hotels";
-import { BookingReport } from "./pages/Reports/Bokings";
 import Login from "./pages/Auth/Login";
 import { Sidebar } from "./components/sidebar";
-import { MostBookedHotel } from "./pages/Reports/MostBookedHotel";
 import { Inventories } from "./pages/Inventories";
 import { Sales } from "./pages/Sales";
 
@@ -65,11 +61,6 @@ function App() {
           <Route path='/sales' element={<Sales />} />
           <Route path='/charts' element={<Charts />} />
           <Route path='/users' element={<Users />} />
-          <Route path='/reports' element={<Reports />} />
-          <Route path='/hotelReports' element={<HotelsReport />} />
-          <Route path='/bookingReports' element={<BookingReport />} />
-          <Route path='/financialReports' element={<Reports />} />
-          <Route path='/mostBookedHotel' element={<MostBookedHotel />} />
 
           <Route path='/login' element={<Login />} />
           <Route path='*' element={<NotFound />} />

@@ -1,6 +1,6 @@
 import { Avatar, Divider, Flex, Heading, IconButton, Text } from "@chakra-ui/react"
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { FiHome, FiMenu, FiUser, FiBarChart, FiSettings, FiBook, FiGrid, FiShoppingBag } from "react-icons/fi";
+import { FiHome, FiMenu, FiUser, FiBook, FiShoppingBag } from "react-icons/fi";
 import { NavItem } from "./NavItem";
 import { Link } from "react-router-dom";
 import { FaList} from "react-icons/fa";
