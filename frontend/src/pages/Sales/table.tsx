@@ -10,8 +10,7 @@ interface Props {
     // onDelete: (inventory: Inventory) => void;
 }
 
-export const DataTable = ({ productSales }: Props) => {
-    console.log('ppppppppp', productSales)
+export const DataTable = ({ productSales, error }: Props) => {
     return (
         <TableContainer maxW="100%" overflowX="scroll">
             <Table variant="simple">
@@ -30,68 +29,70 @@ export const DataTable = ({ productSales }: Props) => {
                         <Th>Actions</Th>
                     </Tr>
                 </Thead>
-                <Tbody textAlign="center">
-                    {
-                        productSales.map((item) => (
-                            <Tr key={item.product_id}>
-                                <Td>
-                                    <Checkbox></Checkbox>
-                                </Td>
-                                <Td>
-                                    <Flex align="center">
-                                        <Text fontWeight="medium" ml={2}>
-                                            {item.product_name}
+                {error === '401' ? (
+                    <Text>You are unauthorized, please Logout to Login Again</Text>
+                ) : (
+                    <Tbody textAlign="center">
+                        {
+                            productSales.map((item) => (
+                                <Tr key={item.product_id}>
+                                    <Td>
+                                        <Checkbox></Checkbox>
+                                    </Td>
+                                    <Td>
+                                        <Flex align="center">
+                                            <Text fontWeight="medium" ml={2}>
+                                                {item.product_name}
+                                            </Text>
+                                        </Flex>
+                                    </Td>
+                                    <Td>
+                                        <Flex align="center">
+                                            <Text fontWeight="medium" ml={2}>
+                                                {moment(item.sale_date).format('YYYY-MM-DD / hh:mm')}
+                                            </Text>
+                                        </Flex>
+                                    </Td>
+                                    <Td>
+                                        <Text fontWeight="light" ml={2}>
+                                            {item.quantity}
                                         </Text>
-                                    </Flex>
-                                </Td>
-                                <Td>
-                                    <Flex align="center">
-                                        <Text fontWeight="medium" ml={2}>
-                                            {moment(item.sale_date).format('YYYY-MM-DD / hh:mm')}
+                                    </Td>
+                                    <Td>
+                                        <Text fontWeight="light" ml={2}>
+                                            {item.selling_price}
                                         </Text>
-                                    </Flex>
-                                </Td>
-                                <Td>
-                                    <Text fontWeight="light" ml={2}>
-                                        {item.quantity}
-                                    </Text>
-                                </Td>
-                                <Td>
-                                    <Text fontWeight="light" ml={2}>
-                                        {item.selling_price}
-                                    </Text>
-                                </Td>
-                                <Td>
-                                    <Text fontWeight="light" ml={2}>
-                                        {item.total_amount}
-                                    </Text>
-                                </Td>
-                                <Td>
-                                    <Text textAlign="center" fontWeight="light" ml={2}>
-                                        {item.currency}
-                                    </Text>
-                                </Td>
-                                <Td>
-                                    <Text textAlign="center" fontWeight="light" ml={2}>
-                                        {item.customer}
-                                    </Text>
-                                </Td>
-                                <Td>
-                                    <Flex justifyContent="space-around">
-                                        <Button variant="unstyled" bgColor="none">
-                                            <Icon color="orange" as={FiEdit2} />
-                                        </Button>
-                                        {/* <Button variant="unstyled" bgColor="none" onClick={() => onDelete(item)}>
-                                    <Icon color="red" as={FiTrash} />
-                                </Button> */}
+                                    </Td>
+                                    <Td>
+                                        <Text fontWeight="light" ml={2}>
+                                            {item.total_amount}
+                                        </Text>
+                                    </Td>
+                                    <Td>
+                                        <Text textAlign="center" fontWeight="light" ml={2}>
+                                            {item.currency}
+                                        </Text>
+                                    </Td>
+                                    <Td>
+                                        <Text textAlign="center" fontWeight="light" ml={2}>
+                                            {item.customer}
+                                        </Text>
+                                    </Td>
+                                    <Td>
+                                        <Flex justifyContent="space-around">
+                                            <Button variant="unstyled" bgColor="none">
+                                                <Icon color="orange" as={FiEdit2} />
+                                            </Button>
 
-                                    </Flex>
-                                </Td>
-                            </Tr>
-                        ))
-                    }
-                </Tbody>
+                                        </Flex>
+                                    </Td>
+                                </Tr>
+                            ))
+                        }
+                    </Tbody>
+                )}
+
             </Table>
-        </TableContainer>
+        </TableContainer >
     );
 };
