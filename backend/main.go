@@ -31,10 +31,11 @@ type Inventory struct {
 	ID           primitive.ObjectID `json:"_id" bson:"_id"`
 	ProductName  string             `json:"product_name" bson:"product_name"`
 	ExpireDate   time.Time          `json:"expire_date" bson:"expire_date"`
-	CostPrice    int                `json:"cost_price" bson:"cost_price"`
-	SellingPrice int                `json:"selling_price" bson:"selling_price"`
+	CostPrice    float64                `json:"cost_price" bson:"cost_price"`
+	SellingPrice float64                `json:"selling_price" bson:"selling_price"`
 	Currency     string             `json:"currency" bson:"currency"`
 	Description  string             `json:"description" bson:"description"`
+	ProductImage string             `json:"product_image" bson:"product_image"`
 }
 
 type Sale struct {
@@ -49,8 +50,8 @@ type Sale struct {
 type SaleWithProduct struct {
 	Sale
 	ProductName  string `json:"product_name" bson:"product_name"`
-	SellingPrice int    `json:"selling_price" bson:"selling_price"`
-	TotalRevenue int    `json:"total_amount" bson:"total_amount"`
+	SellingPrice float64    `json:"selling_price" bson:"selling_price"`
+	TotalRevenue float64    `json:"total_amount" bson:"total_amount"`
 }
 
 var client *mongo.Client
@@ -81,6 +82,7 @@ func main() {
 	// Configure CORS
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
+	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	r.Use(cors.New(config))
 
@@ -96,10 +98,9 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Use a default port like 8080 if PORT is not set
+		port = "8080"
 	}
 
-	// Start your application on the specified port
 	err = r.Run(":" + port)
 	if err != nil {
 		log.Fatal(err)
@@ -143,7 +144,6 @@ func authMiddleware() gin.HandlerFunc {
 		}
 	}
 }
-
 
 func getAllUsers(c *gin.Context) {
 	collection := client.Database("go_sales").Collection("users")
@@ -192,8 +192,6 @@ func signUpUser(c *gin.Context) {
 	// Return actual data
 	c.JSON(http.StatusCreated, gin.H{"User": newUser})
 }
-
-
 
 func loginUser(c *gin.Context) {
 	var inputUser User
@@ -267,6 +265,8 @@ func getAllInventories(c *gin.Context) {
 }
 
 func AddNewInventoryItem(c *gin.Context) {
+	// Add Created User
+
 	var newInventory Inventory
 
 	if err := c.ShouldBindJSON(&newInventory); err != nil {
@@ -310,7 +310,7 @@ func getAllSales(c *gin.Context) {
 		}
 
 		// Calculate the total revenue
-		totalRevenue := sale.Quantity * product.SellingPrice
+		totalRevenue := float64(sale.Quantity) * product.SellingPrice
 
 		// Create a new struct to include product name and revenue
 		saleWithProduct := SaleWithProduct{
