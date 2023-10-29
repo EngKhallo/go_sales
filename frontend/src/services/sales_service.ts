@@ -1,4 +1,4 @@
-import { Inventory, ProductSale, Sale} from "../interfaces";
+import { ProductSale} from "../interfaces";
 import apiClient from "./api-client";
 
 class SalesService {
