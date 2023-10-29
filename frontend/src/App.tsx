@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Grid, GridItem, Show, useColorMode } from "@chakra-ui/react";
-import { Route, BrowserRouter as Router, Routes, useLocation, useSearchParams } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/home";
 import { Header } from "./components/Header";
 import { Charts } from "./pages/Charts";
 import Footer from "./components/Footer";
 import Users from "./pages/Users";
-import Rooms from "./pages/Rooms";
-import { Bookings } from "./pages/Bookings";
 import Reports from "./pages/Reports";
 import { HotelsReport } from "./pages/Reports/Hotels";
 import { BookingReport } from "./pages/Reports/Bokings";
@@ -67,7 +65,6 @@ function App() {
           <Route path='/sales' element={<Sales />} />
           <Route path='/charts' element={<Charts />} />
           <Route path='/users' element={<Users />} />
-          <Route path='/bookings' element={<Bookings />} />
           <Route path='/reports' element={<Reports />} />
           <Route path='/hotelReports' element={<HotelsReport />} />
           <Route path='/bookingReports' element={<BookingReport />} />
