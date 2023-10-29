@@ -22,8 +22,11 @@ const schema = z.object({
     _id: z.string().optional(),
     product_name: z.string(),
     expire_date: z.string(),
-    cost_price: z.number(),
-    selling_price: z.number(),
+    cost_price: z.string({
+        required_error: "Cost Price is required",
+        invalid_type_error: "Cost Price must be a number",
+    }),
+    selling_price: z.string(),
     currency: z.enum(Currency),
     description: z.string(),
 });
@@ -36,9 +39,10 @@ interface Props {
     onClose: () => void;
 }
 
+
 const form = ({ isOpen, onClose, onSubmit }: Props) => {
 
-    const { register, handleSubmit, reset } = useForm<FormData>({ resolver: zodResolver(schema) })
+    const { register, handleSubmit, reset, formState: {errors} } = useForm<FormData>({ resolver: zodResolver(schema) })
 
     return (
         <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
@@ -48,7 +52,11 @@ const form = ({ isOpen, onClose, onSubmit }: Props) => {
 
                 data.expire_date = formattedDate;
 
-                console.log('data', data)
+                data = {
+                    ...data,
+                    cost_price: Number(data.cost_price) as any,
+                    selling_price: Number(data.selling_price) as any,
+                }
                 onSubmit(data);
                 reset();
             })}>
@@ -83,6 +91,11 @@ const form = ({ isOpen, onClose, onSubmit }: Props) => {
                                     id="cost_price"
                                     placeholder="Please enter cost_price"
                                 />
+                                 {errors.cost_price && (
+                                <Box color="red" fontSize="sm">
+                                    {errors.cost_price.message}
+                                </Box>
+                            )}
                             </Box>
                             <Box>
                                 <FormLabel htmlFor="selling_price">selling_price</FormLabel>
