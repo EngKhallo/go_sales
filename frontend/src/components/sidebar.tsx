@@ -1,5 +1,5 @@
-import { Avatar, Divider, Flex, Heading, IconButton, Text } from "@chakra-ui/react"
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Avatar, Divider, Flex, Heading, IconButton } from "@chakra-ui/react"
+import { Dispatch, SetStateAction} from "react";
 import { FiHome, FiMenu, FiUser, FiBook, FiShoppingBag } from "react-icons/fi";
 import { NavItem } from "./NavItem";
 import { Link } from "react-router-dom";
@@ -11,15 +11,17 @@ interface Props {
 }
 
 export const Sidebar = ({ setNavSize, navSize }: Props) => {
-  const [userRole, setUserRole] = useState<string>("");
+    // q: can you read the logged in user role from local storage?
 
-    useEffect(() => {
-        // Read the user role from local storage
-        const role = localStorage.getItem("role");
-        const defaultRole = role || ""; // Use an empty string as the default value if role is null
+//   const [user, setUser] = useState<string>("");
 
-        setUserRole(defaultRole);
-    }, []);
+//     useEffect(() => {
+//         const user = localStorage.getItem("userName");
+//         // 
+//         const defaultRole = user || "";
+
+//         setUser(defaultRole);
+//     }, []);
 
     const handleClick = () => {
         if (navSize === "small") {
@@ -77,8 +79,7 @@ export const Sidebar = ({ setNavSize, navSize }: Props) => {
                 <Flex mt="4" align="center">
                     <Avatar src="avatar.jpeg" size="sm" />
                     <Flex ml="4" flexDir="column" display={navSize == "small" ? "none" : 'flex'}>
-                        <Heading as="h3" size="md">Eng.Khalid</Heading>
-                        <Text color="gray" fontWeight="normal">{userRole}</Text>
+                        <Heading as="h3" size="md">Welcome </Heading>
                     </Flex>
                 </Flex>
             </Flex>

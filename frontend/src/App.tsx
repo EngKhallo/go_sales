@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Grid, GridItem, Show, useColorMode } from "@chakra-ui/react"; 
+import { Grid, GridItem, Show, useColorMode } from "@chakra-ui/react";
 // q: what is the previous line's error?
 
 import { Route, Routes, useLocation } from "react-router-dom";
@@ -13,6 +13,7 @@ import Login from "./pages/Auth/Login";
 import { Sidebar } from "./components/sidebar";
 import { Inventories } from "./pages/Inventories";
 import { Sales } from "./pages/Sales";
+import Signup from "./pages/Auth/Signup";
 
 function App() {
   const [navSize, setNavSize] = useState("large");
@@ -22,10 +23,10 @@ function App() {
   const token = localStorage.getItem("token");
 
   const location = useLocation();
-  if (!token && location.pathname !== '/login') {
-    window.location.href = "/login";
-  }else{
-    if (location.pathname === '/login') {
+  if (!token && location.pathname !== '/login' && location.pathname !== '/signup') {
+    window.location.href = "/login" || "/signup";
+  } else {
+    if (location.pathname === '/login' || location.pathname === '/signup') {
       localStorage.removeItem("token");
     }
   }
@@ -48,7 +49,7 @@ function App() {
       </GridItem>
       <Show above="lg">
         <GridItem
-          display={location.pathname == '/login' ? 'none' : 'grid'}
+          display={location.pathname == '/login' || location.pathname == '/signup'? 'none' : 'grid'}
           position="fixed" // Make the sidebar fixed
           left="0"
           width={navSize == "small" ? "75px" : "200px"}
@@ -70,6 +71,7 @@ function App() {
           <Route path='/users' element={<Users />} />
 
           <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </GridItem>

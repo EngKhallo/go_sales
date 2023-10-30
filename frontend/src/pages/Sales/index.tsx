@@ -26,6 +26,9 @@ export const Sales = () => {
     const [inventory, setInventory] = useState<Inventory[]>([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredSales, setFilteredSales] = useState<ProductSale[]>([]);
+
 
     const fetchData = () => {
         setLoading(true)
@@ -48,22 +51,34 @@ export const Sales = () => {
 
     const fetchProducts = async () => {
         try {
-          const response = await apiClient.get('/inventory');
-          const data = response.data;
-          setInventory(data);
-          return data;
+            const response = await apiClient.get('/inventory');
+            const data = response.data;
+            setInventory(data);
+            return data;
         } catch (err) {
-          console.error('Error fetching products', err);
-          throw err;
+            console.error('Error fetching products', err);
+            throw err;
         }
-      };
-      
+    };
+
 
     useEffect(() => {
         fetchData(),
-        console.log("all inventories: ", inventory)
+            console.log("all inventories: ", inventory)
         fetchProducts()
-    }, []);
+        const filtered = sale.filter((item) => {
+            // Modify this condition to match your search criteria.
+            // Here, we search in multiple attributes.
+            return (
+                item.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.sale_date.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.customer.toString().includes(searchQuery) ||
+                item.selling_price.toString().includes(searchQuery) ||
+                item.currency.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        });
+        setFilteredSales(filtered);
+    }, [sale, searchQuery]);
 
     const addNewSale = async (newSale: ISales) => {
         try {
@@ -89,7 +104,13 @@ export const Sales = () => {
             <Box bg={isDarkMode ? 'gray.800' : 'white'} p={5}>
                 <Flex justifyContent={"space-between"}>
                     <Box>
-                        <Input placeholder="Filter data" w={"400px"} />
+                        <Input
+                            placeholder="Filter data"
+                            w={"400px"}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+
                     </Box>
                     <Box>
                         <Button mx={3} colorScheme='blue'>Query</Button>
@@ -109,7 +130,7 @@ export const Sales = () => {
                             {/* Users Form */}
                             <Form products={inventory} isOpen={isOpen} onClose={onClose}
                                 onSubmit={(formData) => {
-                                    const newSale: ISales = { ...formData, quantity: parseInt(formData.quantity)};
+                                    const newSale: ISales = { ...formData, quantity: parseInt(formData.quantity) };
                                     addNewSale(newSale);
                                 }} />
 
@@ -122,7 +143,7 @@ export const Sales = () => {
                 </Flex>
 
                 {/* User Table */}
-                <DataTable loading={loading} error={error} productSales={sale} />
+                <DataTable loading={loading} error={error} productSales={filteredSales} />
             </Box>
         </Box>
     )
