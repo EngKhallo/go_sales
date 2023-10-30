@@ -38,15 +38,11 @@ const Login = () => {
         Password: data.password,
       });
 
-      const { token } = response.data; // Assuming the token is returned in the response
-      // const role = response.data.data.roles; // Assuming the role is returned in the response
+      const { token } = response.data;
 
-      // Store the token and role in local storage
       const localToken = localStorage.setItem("token", token);
-      // const localRoles = localStorage.setItem("role", role);
       console.log('local datas', localToken);
 
-      // Redirect to the appropriate page
       window.location.href = "/";
     } catch (error) {
       console.error(error);

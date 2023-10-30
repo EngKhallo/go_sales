@@ -48,7 +48,7 @@ const Signup = () => {
             console.log('local datas', localToken);
 
             // Redirect to the appropriate page
-            window.location.href = "/login";
+            window.location.href = "/";
         } catch (error) {
             console.error(error);
         }
