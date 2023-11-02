@@ -38,10 +38,11 @@ const Login = () => {
         Password: data.password,
       });
 
-      const { token } = response.data;
+      const { token, user } = response.data;
 
-      const localToken = localStorage.setItem("token", token);
-      console.log('local datas', localToken);
+      localStorage.setItem("token", token);
+
+      localStorage.setItem("user", JSON.stringify(user))
 
       window.location.href = "/";
     } catch (error) {

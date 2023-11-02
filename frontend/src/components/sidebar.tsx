@@ -1,9 +1,9 @@
 import { Avatar, Divider, Flex, Heading, IconButton } from "@chakra-ui/react"
-import { Dispatch, SetStateAction} from "react";
+import { Dispatch, SetStateAction } from "react";
 import { FiHome, FiMenu, FiUser, FiBook, FiShoppingBag } from "react-icons/fi";
 import { NavItem } from "./NavItem";
 import { Link } from "react-router-dom";
-import { FaList} from "react-icons/fa";
+import { FaList } from "react-icons/fa";
 
 interface Props {
     navSize: any;
@@ -11,17 +11,9 @@ interface Props {
 }
 
 export const Sidebar = ({ setNavSize, navSize }: Props) => {
-    // q: can you read the logged in user role from local storage?
 
-//   const [user, setUser] = useState<string>("");
-
-//     useEffect(() => {
-//         const user = localStorage.getItem("userName");
-//         // 
-//         const defaultRole = user || "";
-
-//         setUser(defaultRole);
-//     }, []);
+    const loggedUserString = localStorage.getItem("user");
+    const loggedUser = loggedUserString ? JSON.parse(loggedUserString) : null;
 
     const handleClick = () => {
         if (navSize === "small") {
@@ -79,7 +71,7 @@ export const Sidebar = ({ setNavSize, navSize }: Props) => {
                 <Flex mt="4" align="center">
                     <Avatar src="avatar.jpeg" size="sm" />
                     <Flex ml="4" flexDir="column" display={navSize == "small" ? "none" : 'flex'}>
-                        <Heading as="h3" size="md">Welcome </Heading>
+                        <Heading as="h5" size="md">Welcome {loggedUser.name} </Heading>
                     </Flex>
                 </Flex>
             </Flex>
